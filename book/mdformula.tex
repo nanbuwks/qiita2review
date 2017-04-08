@@ -1,0 +1,329 @@
+\chapter{Re:VIEW+markdown で数式の入った薄い本を書く}
+\label{chap:mdformula}
+ \begin{center} 
+河野悦昌  \textbf{秘密結社オープンフォース}
+
+ \end{center} 
+軌道エレベータの本をつくる。いろいろと数式を自分でいじって計算する演習本にしようと思う。
+TeXを日本語で使うには人類には早すぎる。なのでRe:VIEWでつくる。
+けれども頑張ろうと思うと結局TeXをすることになる。なので人類には早すぎる。
+
+\section{初期化}
+\label{sec:4-1}
+
+orbitcalcというコードネームで作る。
+review{-}init orbitcalc
+
+\section{雛形}
+\label{sec:4-2}
+
+解析概論1943プロジェクトから最初の１ページをコピーしてこれを雛形とする。
+
+\begin{reviewemlist}
+
+\#\#基本的ノ概念
+\#\#\#数ノ概念及ビ四則算法
+ハ既知ト彼定スル@\textless{}fn\textgreater{}\{23{-}1\}．始メノ中ハ實数ノミヲ取扱フカラ
+一々断ラナイ．次ノ用語ハ周知デアル．
+
+**自然数．** 1,2,3 等． 物ノ順位又ハ物ノ集合ノ個数ヲ示ス篤ニ用ヰラレル．
+
+**整数．** 0，±1，±2等． 自然数ハ正ノ整数デアル．
+
+**有理数．**0及ビ @\textless{}m\textgreater{}\{\reviewbackslash{}pm \reviewbackslash{}dfrac \{a\reviewbackslash{}\reviewbackslash{}\} \{b\reviewbackslash{}\reviewbackslash{}\}\}子，但α,b ハ自然数． b=1ナルトキ，ソレハ整数デアル．
+
+**無理数．**有理数以外ノ責数．例ヘバ
+
+//texequation\{
+\reviewbackslash{}begin\{array\}\{l\}
+\reviewbackslash{}sqrt \{2\}=1.4142135\reviewbackslash{}ldots,\reviewbackslash{}\reviewbackslash{}\reviewbackslash{}
+e=2.718281828…，\reviewbackslash{}\reviewbackslash{}\reviewbackslash{}
+pi=3.1415926535…
+\reviewbackslash{}end\{array\}
+//\}
+
+
+
+（但，ソレラガ有理数デナイコトハ護明ヲ要スル）
+  十進法．賓数ヲ十進法デ表ハスコトモ周知デアル．有理数ヲ十進法デ表ハセバ，数字
+ハ有限カ，又ハ無限ナラバ循環小数ニナル．但，有限位数ノ十進数ヲ循環小数ノ形二表ハス
+コトモ出来ル．例ヘバ0.6= 0.5999…．無理数ヲ十進法デ表ハスナラバ，無限ノ位数ヲ要
+シ，数字ハ決シテ循環シナイ．
+  吾々ガ十進法ニヨツテ数ヲ表ハズニ至ツタノハ，手指ノ数ニソノ原因ガアルノデアラ
+ウガ，理論上ハ1以外ノ任意ノ自然数ヲ基本トシテ，十進法ト同様ノ方法ニヨツテ，数ヲ表
+ハスコトガ出来ル．
+  特ニ二進法デハ，数字ハ0ト1トダケデ足ル．有理数ヲ二進法デ表ハセバ，分母ガ2
+ノ巾@\textless{}fn\textgreater{}\{23{-}2\}ニナルモノノ外ハ，循環二進数ニナル．
+//texequation\{
+\reviewbackslash{}left[ 例\reviewbackslash{}right] \reviewbackslash{}dfrac \{5\} \{8\}=\reviewbackslash{}dfrac \{1\} \{2\}+\reviewbackslash{}dfrac \{1\} \{2\textasciicircum{}\{3\}\}=\reviewbackslash{}left( \reviewbackslash{}begin\{matrix\} 0.101\reviewbackslash{}end\{matrix\} \reviewbackslash{}right)
+//\}
+
+//footnote[23{-}1][附録（一）ヲ参照．]
+//footnote[23{-}2][巾ハ羃ノ假字（和算ノ用例ニヨル）.]
+
+\end{reviewemlist}
+
+これを、orbitcalc.mdと名前をつけて保存。
+
+\section{md2review の制限}
+\label{sec:4-3}
+
+md2review は内部で redcarpet なるものを呼び出しているようで、それによる制限？
+
+\begin{itemize}
+\item リストの入れ子ができない
+\item markdownで斜体を指定 ( \textbf{文} ないし \textbf{文} ) したものがreファイルだと強調 (\textbf{文} ) となる
+\end{itemize}
+
+このほか、reファイルでは引用ブロック( //quote\{ 文 \} )の入れ子をするとエラーになるので、二重引用しているmarkdownをmd2reviewして作ったreファイルはエラーが出る。
+
+\section{TeXの機能を使って中央揃えを実現する}
+\label{sec:4-4}
+
+\begin{reviewemlist}
+//raw[\textbar{}latex\textbar{} \reviewbackslash{}begin\{center\}　中央揃えにしたい文　\reviewbackslash{}end\{center\} ]
+\end{reviewemlist}
+
+\begin{reviewemlist}
+//raw[\textbar{}latex\textbar{} \reviewbackslash{}begin\{center\} ]
+**筆頭著者** 共著者 *所属*
+//raw[\textbar{}latex\textbar{} \reviewbackslash{}end\{center\} ]
+\end{reviewemlist}
+
+のようにすればいい。しかしながら
+\texttt{//raw} の部分がmarkdownビューの時にゴミとして出てくる。なのでここらへんはTeXコンパイル時にフィルターとして活用するなど。
+
+qiitaの場合は以下のようにすると中央揃えとなる。
+
+\begin{equation*}
+中央揃え
+\end{equation*}
+
+このようなフォーマットを通すためのフィルタは以下の通り
+
+\begin{reviewemlist}
+\textgreater{} ```math
+\textgreater{} \reviewbackslash{}left[ 例\reviewbackslash{}right] \reviewbackslash{}dfrac \{5\} \{8\}=\reviewbackslash{}dfrac \{1\} \{2\}+\reviewbackslash{}dfrac \{1\}   \{2\textasciicircum{}\{3\}\}=\reviewbackslash{}left( \reviewbackslash{}begin\{matrix\} 0.101\reviewbackslash{}end\{matrix\} \reviewbackslash{}right)
+\textgreater{} ```
+\end{reviewemlist}
+
+↓
+
+\begin{reviewemlist}
+//texequation\{
+\reviewbackslash{}left[ 例\reviewbackslash{}right] \reviewbackslash{}dfrac \{5\} \{8\}=\reviewbackslash{}dfrac \{1\} \{2\}+\reviewbackslash{}dfrac \{1\} \{2\textasciicircum{}\{3\}\}=\reviewbackslash{}left( \reviewbackslash{}begin\{matrix\} 0.101\reviewbackslash{}end\{matrix\} \reviewbackslash{}right)
+//\}
+\end{reviewemlist}
+
+インライン命令`a{-}\textdollar{}\textdollar{}
+
+\begin{reviewemlist}
+\textdollar{}\reviewbackslash{}pm \reviewbackslash{}dfrac \{a\} \{b\}\textdollar{}
+\end{reviewemlist}
+
+↓
+
+\begin{reviewemlist}
+@\textless{}m\textgreater{}\{\reviewbackslash{}pm \reviewbackslash{}dfrac \{a\reviewbackslash{}\reviewbackslash{}\} \{b\reviewbackslash{}\reviewbackslash{}\}\}
+\end{reviewemlist}
+
+　
+
+\section{画像を縮小するスクリプト}
+\label{sec:4-5}
+
+写真や図も入れる。写真や図を、markdownの段階でプレビューしやすい形で作りたい。
+通常の書き方
+
+\begin{reviewemlist}
+![test](images/test.png  "" )
+\end{reviewemlist}
+
+だけど、このままだと縮小できない。なのでスクリプトで何とかする。
+@\textless{}tt\textgreater{}\{
+通常の書き方
+![テスト](images/test.png  "" )
+拡張した書き方
+[scale=0.5]![テスト](./images/test.png  "" )
+\}
+↓md2reviewを通す
+
+\begin{reviewemlist}
+通常の書き方
+//image[test][テスト]\{
+//\}
+拡張した書き方
+//[test][テスト][scale=0.5]\{
+//\}
+\end{reviewemlist}
+
+となる。
+これを、
+↓
+
+\begin{reviewemlist}
+通常の書き方
+//image[test][テスト]\{
+//\}
+拡張した書き方
+//image[test][テスト][scale=0.5]\{
+//\}
+\end{reviewemlist}
+
+とするスクリプト。
+
+\begin{reviewemlist}
+\#\#!/usr/bin/env ruby
+while line = gets
+  line.chomp!
+  if md1 = line.match(/\textasciicircum{}\reviewbackslash{}[.*?\reviewbackslash{}]/)
+    if md2 = line.match(/\reviewbackslash{}/\reviewbackslash{}/(.+)\reviewbackslash{}]/)
+      print md2[0],md1[0],"\{\reviewbackslash{}n"
+    else
+      puts line
+    end
+  else
+    puts line
+  end
+end
+
+\end{reviewemlist}
+
+scalemd.rb
+
+\begin{reviewemlist}
+\#\#!/usr/bin/env ruby
+while line = gets
+  line.chomp!
+  if md1 = line.match(/\textasciicircum{}\reviewbackslash{}[.*?\reviewbackslash{}]/)
+    if md2 = line.match(/\reviewbackslash{}/\reviewbackslash{}/(.+)\reviewbackslash{}]/)
+      print md2[0],md1[0],"\{\reviewbackslash{}n"
+    else
+      puts line
+    end
+  else
+    puts line
+  end
+end
+
+\end{reviewemlist}
+
+使い方
+@\textless{}tt\textgreater{}\{
+md2review orbitcalc.md \textbar{} ruby scalemd.rb \textgreater{} orbitcalc.re
+\}
+
+\section{config.ymlやcover.jpgを入れ替える}
+\label{sec:4-6}
+
+cover.jpg は1110x1,840 は2ページ目に配置された。1101x1825だとOK。
+
+\section{ひたすら書く}
+\label{sec:4-7}
+
+（明日から頑張る）
+
+\section{Tips}
+\label{sec:4-8}
+
+\subsection*{数式を書く}
+\addcontentsline{toc}{subsection}{数式を書く}
+\label{sec:4-8-1}
+
+Web Equation
+を使って、手書き数式をTEXに変換してくれる。
+https://webdemo.myscript.com/\#/demo/equation
+紹介ページ
+http://gigazine.net/news/20120203{-}latex{-}mathml{-}web{-}equation/
+
+ここで書いた数式をゲット
+
+\begin{reviewemlist}
+
+g=r\reviewbackslash{}omega \textasciicircum{}\{2\}
+
+\end{reviewemlist}
+
+ブロック要素として数式を入れるには
+
+\begin{reviewemlist}
+//texequation\{
+g=r\reviewbackslash{}omega \textasciicircum{}\{2\}
+//\}
+\end{reviewemlist}
+
+というように囲めばいい
+
+インライン要素として数式を入れるには
+
+\begin{reviewemlist}
+@\textless{}m\textgreater{}\{g=r\reviewbackslash{}omega \textasciicircum{}\{2\reviewbackslash{}\reviewbackslash{}\}\}
+\end{reviewemlist}
+
+というように、閉じ大括弧の前にエスケープを2つ入れる。人類にはまだ早い。
+
+\subsection*{コードブロック中に \texttt{//\}} が書けない}
+\addcontentsline{toc}{subsection}{コードブロック中に \texttt{//\}} が書けない}
+\label{sec:4-8-2}
+
+markdown 上のコードブロック中には \texttt{//\}} は問題なくかけるのだけれど、Re:VIEW形式に変換するとコードブロックがそこで閉じてしまい、エラーとなる。Re:VIEW のブロック構文は\texttt{//\}} を閉じタグになっているのでRe:VIEWの構文を解説する文書が Re:VIEWで書けないということになってしまう。
+
+これは Re:VIEW形式の仕様の問題かな。
+
+\begin{quote}
+//embedブロック命令はブロック内の文字列をそのまま文書中に埋め込みます。エスケープされる文字はありません。
+
+\end{quote}
+
+「Re:VIEW フォーマットガイド」
+https://github.com/kmuto/review/blob/master/doc/format.ja.md
+
+コードブロック中の書き方でどうにかできないかと思ったけれどもエスケープできないのでこれはどうしようもない。仕方がないので、markdownの段階でフィルタを通すことにした。コードブロック中に \texttt{//\}} が存在するようなら各行頭にスペースを入れるようにした。
+
+slash2braceincode.rb
+
+\begin{reviewemlist}
+@\textless{}raw\textgreater{}\{@\}\textless{}fn\textgreater{}\{23{-}1\}
+//@\textless{}raw\textgreater{}\{\}\}
+\end{reviewemlist}
+
+↓
+
+\begin{reviewemlist}
+@\textless{}fn\textgreater{}\{23{-}1\}
+//\}
+\end{reviewemlist}
+
+実は下の//\}は何も出力していない。パーサを邪魔しているだけ。
+
+あたまの
+@\textless{}tt\textgreater{}\{
+\}
+```
+の前に改行が無いとRe:VIEWでは
+
+\begin{reviewemlist}
+//emlist\{
+\end{reviewemlist}
+
+ではなく
+
+\begin{reviewemlist}
+@\textless{}tt\textgreater{}\{
+\end{reviewemlist}
+
+となる。ここにインライン命令が入るとmd2reviewが余計なエスケープをつけてコンパイルできなくなる。
+
+なので改行をつけよう。
+
+また、Re:VIEWの命令に誤解釈されるものを本文に書くとおかしくなる。
+
+\subsection*{markdown と Re:VIEWファイルの違い}
+\addcontentsline{toc}{subsection}{markdown と Re:VIEWファイルの違い}
+\label{sec:4-8-3}
+
+\subsubsection*{エンターの扱い}
+\label{sec:4-8-3-1}
+
+markdown →　改行となる
+Re:VIEW →　空白となる
