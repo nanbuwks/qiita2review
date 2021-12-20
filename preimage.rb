@@ -24,11 +24,15 @@ while line = gets
 #  elsif ( codeBlock == false && md1 = line.match(/^.*!\[.*\]\(.*\)/))
 #      # non scaled picture with discription
 #      puts line
-  elsif ( codeBlock == false && md1 = line.match(/^\[\]\(\ *(scale=.*)\ *\)!\[.*\]\(.*\)/))
+  elsif ( codeBlock == false && md1 = line.match(/(<[iI][mM][gG]\s.*>)/))
+      puts "---------------------------------------"
+      puts md1[0]
+      puts md1[1]
+      puts "---------------------------------------"
       # picture scale with clear discription
       # [](scale=0.5)![aaa](http:....) →  [scale=0.5]![](http:....)
-      md2 = line.match(/^\[\]\(\ *scale=.*\ *\)!\[.*\](\(.*\))/)
-      puts "[" + md1[1] + "]![]" + md2[1]
+      # md2 = line.match(/^\[\]\(\ *scale=.*\ *\)!\[.*\](\(.*\))/)
+      # puts "[" + md1[1] + "]![]" + md2[1]
   elsif ( codeBlock == false && md1 = line.match(/^.*!\[.*\](\(.*\))/))
       # non scaled picture with clear discription
       # ![aaa](http:....) →  ![](http:....)
@@ -43,8 +47,11 @@ while line = gets
       end 
       inlinecode="nocode"
       inlinetex="notex"
+      # inline command 
+      # check of inline code until start []( 
       for  num in offset..md1-1
          ch = line[num]
+         #   ` ~ ` check
          if ( ch == "`" && inlinecode=="nocode" )
              inlinecode="starting"
          elsif ( ch != "`" && inlinecode=="starting" )
@@ -53,18 +60,22 @@ while line = gets
             inlinecode="ending"
          elsif ( ch != "`" && inlinecode=="ending" )
             inlinecode="nocode"
+         #   $ ~ $ check
          elsif ( ch == "$" && inlinecode=="nocode" && inlinetex=="notex" && thereistex==true )
             inlinetex="intex"
          elsif ( ch == "$" && inlinecode=="nocode" && inlinetex=="intex" )
             inlinetex="notex"
          end
+         print "'"
          print ch
+         print "'"
       end
       offset=md1+4
       num=offset-1
       if ( inlinetex!="notex" || inlinecode!="nocode")
       else 
         incomment=true
+        # comment pass loop
         while incomment==true do
           if ( line.length < num )
             if ( line=gets )

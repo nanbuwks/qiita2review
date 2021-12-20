@@ -1,15 +1,18 @@
 PREDEF:
 - hajimeni.re
-CHAPS:
-- howtoQiita2Review.re
-- QiitaFormula.re
-- AWSReVIEW.re
-- mdformula.re
-- qiita2review.re
-- reviewOnApache.re
 
+CHAPS:
+- 80YENNArduino.re
+# - ATMegaMassWrite.re
+# - ArduinoCAN.re
+- LGT8f328P.re
+# - SingleSidePCBA.re
+# - VSCodeNordic.re
+# - WiFiAP.re
+# - pepperAndroid.re
+# - premaidai.re
+# - refil3Dprinter.re
 APPENDIX:
 
 POSTDEF:
-
-
+- atogaki.re
